@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Panel</title>
+<link rel="stylesheet" href="/static/user_styles.css">
+</head>
+<body>
+<div class="user-container">
+  <h1>User Panel</h1>
+
+  <section class="change-password">
+    <h2>Change Password</h2>
+    <form method="POST" action="{% url 'user_change_password' %}">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="input-group">
+        <label for="old-password">Old Password</label>
+        <input type="password" id="old-password" name="old_password" required>
+        {{ form.old_password.errors }}
+      </div>
+      <div class="input-group">
+        <label for="new-password">New Password</label>
+        <input type="password" id="new-password" name="new_password" required>
+        {{ form.new_password.errors }}
+      </div>
+      <div class="input-group">
+        <label for="confirm-password">Confirm New Password</label>
+        <input type="password" id="confirm-password" name="confirm_password" required>
+        {{ form.confirm_password.errors }}
+      </div>
+      <button type="submit">Change Password</button>
+    </form>
+    {% if messages %}
+      {% for message in messages %}
+        <p class="{{ message.tags }}">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+  </section>
+
+  <section class="complete-work">
+    <h2>Complete Work</h2>
+    <form method="POST" action="{% url 'user_complete_work' %}">
+      {% csrf_token %}
+      <button type="submit">Complete Work</button>
+    </form>
+  </section>
+</div>
+</body>
+</html>
