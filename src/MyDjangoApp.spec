@@ -9,7 +9,8 @@ a = Analysis(
     datas=[
         ('D:/ProjectPy/SMIP/db.sqlite3', '.'),
         ('D:/ProjectPy/SMIP/src/config/*', 'config'),
-        ('D:/ProjectPy/SMIP/src/static/*', 'static')
+        ('D:/ProjectPy/SMIP/src/static/*', 'static'),
+        ('D:/ProjectPy/SMIP/src/templates/*', 'templates'),  # Include templates if needed
     ],
     hiddenimports=[],
     hookspath=[],
