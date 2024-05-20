@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+<link rel="stylesheet" href="/static/admin_styles.css">
+<!-- Bootstrap CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="admin-container">
+  <h2>Admin Panel</h2>
+
+  <!-- Password Change Section -->
+  <h3>Change Password</h3>
+  <form method="POST" action="{% url 'admin_panel' %}">
+    {% csrf_token %}
+    {% if messages %}
+      {% for message in messages %}
+        <p class="{{ message.tags }}">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+    {{ password_form.non_field_errors }}
+    <div class="input-group">
+      <label for="old_password">Old Password</label>
+      <input type="password" id="old_password" name="old_password" required>
+      {{ password_form.old_password.errors }}
+    </div>
+    <div class="input-group">
+      <label for="new_password">New Password</label>
+      <input type="password" id="new_password" name="new_password" required>
+      {{ password_form.new_password.errors }}
+    </div>
+    <div class="input-group">
+      <label for="confirm_password">Confirm New Password</label>
+      <input type="password" id="confirm_password" name="confirm_password" required>
+      {{ password_form.confirm_password.errors }}
+    </div>
+    <button type="submit" name="change_password">Change Password</button>
+  </form>
+
+  <!-- Create User Section -->
+  <h3>Create User</h3>
+  <!-- Button to Open the Modal -->
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createUserModal">
+    Create User
+  </button>
+
+  <!-- The Modal -->
+  <div class="modal fade" id="createUserModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Create User</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+          <form method="POST" action="{% url 'admin_panel' %}">
+            {% csrf_token %}
+            {{ create_user_form.non_field_errors }}
+            <div class="input-group">
+              <label for="login">Login</label>
+              <input type="text" id="login" name="login" required>
+              {{ create_user_form.login.errors }}
+            </div>
+            <div class="input-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" name="password">
+              {{ create_user_form.password.errors }}
+            </div>
+            <div class="input-group">
+              <label for="first_name">First Name</label>
+              <input type="text" id="first_name" name="first_name">
+              {{ create_user_form.first_name.errors }}
+            </div>
+            <div class="input-group">
+              <label for="last_name">Last Name</label>
+              <input type="text" id="last_name" name="last_name">
+              {{ create_user_form.last_name.errors }}
+            </div>
+            <div class="input-group">
+              <label for="role">Role</label>
+              <input type="number" id="role" name="role" value="0">
+              {{ create_user_form.role.errors }}
+            </div>
+            <div class="input-group">
+              <label for="is_blocked">Is Blocked</label>
+              <input type="checkbox" id="is_blocked" name="is_blocked">
+              {{ create_user_form.is_blocked.errors }}
+            </div>
+            <button type="submit" name="create_user">Create User</button>
+          </form>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- User Management Section -->
+  <h3>Manage Users</h3>
+  <!-- Password Visibility Toggle -->
+  <form method="GET" action="{% url 'admin_panel' %}">
+    <button type="submit" name="toggle_password_visibility" class="btn btn-secondary">
+      Toggle Password Visibility
+    </button>
+  </form>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Blocked</th>
+        <th>Password Restriction</th>
+        <th>Password</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.login }}</td>
+        <td>{{ user.first_name }}</td>
+        <td>{{ user.last_name }}</td>
+        <td>{{ user.is_blocked }}</td>
+        <td>{{ user.password_restriction }}</td>
+        <td>
+          {% if password_visibility %}
+            {{ user.password }}
+          {% else %}
+            ********
+          {% endif %}
+        </td>
+        <td>
+          {% if user.is_blocked %}
+          <a href="{% url 'unblock_user' user.id %}" class="btn btn-warning">Unblock</a>
+          {% else %}
+          <a href="{% url 'block_user' user.id %}" class="btn btn-danger">Block</a>
+          {% endif %}
+          <a href="{% url 'toggle_password_restriction' user.id %}" class="btn btn-info">Password Restrictions</a>
+          <a href="{% url 'delete_user' user.id %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Complete Work Section -->
+  <h3>Complete Work</h3>
+  <form method="POST" action="{% url 'admin_complete_work' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Complete Work</button>
+  </form>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

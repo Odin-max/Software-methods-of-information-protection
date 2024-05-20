@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+<link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<div class="login-container">
+  <form class="login-form" method="POST" action="{% url 'login_page' %}">
+    {% csrf_token %}
+    <h2>Login</h2>
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% endif %}
+    <div class="input-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required>
+    </div>
+    <div class="input-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+    </div>
+    <button type="submit">Login</button>
+  </form>
+  <div class="register-link">
+    <p>Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+  </div>
+</div>
+
+<!-- Password Change Modal -->
+{% if show_password_modal %}
+<div id="passwordModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="document.getElementById('passwordModal').style.display='none'">&times;</span>
+    <h2>Change Password</h2>
+    <form method="POST" action="{% url 'handle_password_change' user_id %}">
+      {% csrf_token %}
+      {{ password_form.non_field_errors }}
+      <div class="input-group">
+        <label for="old-password">Old Password</label>
+        <input type="password" id="old-password" name="old_password" required>
+        {{ password_form.old_password.errors }}
+      </div>
+      <div class="input-group">
+        <label for="new-password">New Password</label>
+        <input type="password" id="new-password" name="new_password" required>
+        {{ password_form.new_password.errors }}
+      </div>
+      <div class="input-group">
+        <label for="confirm-password">Confirm New Password</label>
+        <input type="password" id="confirm-password" name="confirm_password" required>
+        {{ password_form.confirm_password.errors }}
+      </div>
+      <button type="submit">Change Password</button>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+<!-- About Program Button -->
+<div class="about-program-container">
+  <button onclick="showAboutProgram()">About the Program</button>
+</div>
+
+<!-- About Program Modal -->
+<div id="aboutProgramModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="document.getElementById('aboutProgramModal').style.display='none'">&times;</span>
+    <h2>About the Program</h2>
+    <p>Author: Maxim Prikhodko, student of group 125m-23-2. Individual task: №6 The presence of letters and signs of arithmetic operations.</p>
+  </div>
+</div>
+
+<script>
+// Show the password modal if required
+{% if show_password_modal %}
+document.getElementById('passwordModal').style.display = 'block';
+{% endif %}
+
+// Show the About Program modal
+function showAboutProgram() {
+  document.getElementById('aboutProgramModal').style.display = 'block';
+}
+</script>
+</body>
+</html>
+
